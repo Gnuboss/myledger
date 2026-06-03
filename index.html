@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyLedger — Generated Locally</title>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/invoice.css">
+  <link rel="stylesheet" href="css/ui.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- WELCOME OVERLAY -->
+<div class="welcome-overlay hidden" id="welcome-overlay" onclick="handleWelcomeClick(event)">
+  <div class="welcome-card">
+    <div class="wc-head">
+      <div class="wc-logo">MyLedger &mdash; Generated Locally</div>
+      <div class="wc-title">Invoicing built<br>for independence.</div>
+      <div class="wc-sub">v1.0 &middot; LOCAL-FIRST &middot; NO SUBSCRIPTIONS</div>
+    </div>
+    <div class="wc-body">
+      <div class="wc-principle">
+        <div class="wc-icon">🖥</div>
+        <div>
+          <div class="wc-principle-title">Runs entirely on your device</div>
+          <div class="wc-principle-desc">No server, no account, no internet required. Your invoices never leave your machine.</div>
+        </div>
+      </div>
+      <div class="wc-principle">
+        <div class="wc-icon">📄</div>
+        <div>
+          <div class="wc-principle-title">Quote to invoice flow</div>
+          <div class="wc-principle-desc">Start with a quote, get acceptance, then convert to a formal invoice in one click.</div>
+        </div>
+      </div>
+      <div class="wc-principle">
+        <div class="wc-icon">💾</div>
+        <div>
+          <div class="wc-principle-title">Your data, your export</div>
+          <div class="wc-principle-desc">Full JSON backup and restore. Print clean PDFs with your doc ID as the filename.</div>
+        </div>
+      </div>
+      <div class="wc-principle">
+        <div class="wc-icon">💳</div>
+        <div>
+          <div class="wc-principle-title">Payment methods built in</div>
+          <div class="wc-principle-desc">Configure Bank, Wise, PayPal and Crypto once in Settings. Attach to any document.</div>
+        </div>
+      </div>
+      <div id="wc-demo-note-wrap"></div>
+      <div class="wc-actions">
+        <button class="wc-start-btn" onclick="dismissWelcome()">START USING MYLEDGER</button>
+        <a class="wc-dl-btn" id="wc-dl-btn" href="#" download="myledger.html" style="display:none">⬇ DOWNLOAD</a>
+      </div>
+      <button class="wc-skip" onclick="dismissWelcome()">SKIP &mdash; GO TO APP &rsaquo;</button>
+    </div>
+  </div>
+</div>
+
+<div class="app">
+
+  <!-- DEMO BANNER -->
+  <div class="demo-banner" id="demo-banner">
+    <div class="demo-banner-text">
+      <strong>⚠ PUBLIC DEMO</strong>
+      Data entered here is stored in this browser only. Download MyLedger and run it locally for permanent, private storage.
+    </div>
+    <div class="demo-banner-actions">
+      <a class="demo-dl-btn" id="demo-dl-btn" href="#" download="myledger.html">⬇ DOWNLOAD MYLEDGER</a>
+      <button class="demo-dismiss-btn" onclick="dismissBanner()">DISMISS ×</button>
+    </div>
+  </div>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-logo">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="2" y="1" width="12" height="14"/>
+        <line x1="5" y1="5" x2="11" y2="5"/>
+        <line x1="5" y1="8" x2="9" y2="8"/>
+        <line x1="5" y1="11" x2="7" y2="11"/>
+      </svg>
+      <strong>MyLedger</strong>
+    </div>
+    <div class="topbar-nav">
+      <button class="tn active" data-v="invoices" onclick="showView('invoices')">Documents</button>
+      <button class="tn" data-v="clients"  onclick="showView('clients')">Clients</button>
+      <button class="tn" data-v="settings" onclick="showView('settings')">Settings</button>
+    </div>
+    <div class="topbar-right">
+      <div class="status-pill s-draft" id="status-pill">DRAFT</div>
+      <button class="tb-btn" onclick="duplicateDoc()">DUPLICATE</button>
+      <button class="tb-btn primary" onclick="saveDoc()">SAVE</button>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="body">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+      <button class="new-btn" onclick="showNewMenu()">+ NEW DOCUMENT</button>
+      <div class="sidebar-filters">
+        <button class="sf active" data-f="all"     onclick="filterList('all')">ALL</button>
+        <button class="sf"        data-f="quote"   onclick="filterList('quote')">QUOTES</button>
+        <button class="sf"        data-f="invoice" onclick="filterList('invoice')">INV</button>
+      </div>
+      <div class="inv-list" id="inv-list"></div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+      <!-- DOCUMENTS VIEW -->
+      <div id="view-invoices" style="display:flex;flex-direction:column;flex:1;overflow:hidden">
+        <div class="toolbar">
+          <button class="t-btn" id="btn-toggle-sidebar" onclick="toggleSidebar()" title="Toggle sidebar">☰</button>
+          <div class="toolbar-crumb">DOCUMENTS / <span id="crumb-id">—</span></div>
+          <button class="t-btn" onclick="showNewMenu()">NEW</button>
+          <button class="t-btn" id="convert-btn" style="display:none" onclick="convertToInvoice()">→ INVOICE</button>
+          <button class="t-btn" onclick="printDoc()">PRINT / PDF</button>
+          <button class="t-btn" id="btn-toggle-panel" onclick="togglePanel()">OPTIONS ▸</button>
+        </div>
+
+        <div class="workspace">
+
+          <!-- INVOICE DOCUMENT -->
+          <div class="doc-area">
+            <div class="invoice-doc" id="invoice-doc">
+
+              <div class="doc-type-bar">
+                <span class="doc-type-label" id="doc-type-label">QUOTATION</span>
+                <span class="doc-type-id"    id="doc-type-id">—</span>
+              </div>
+
+              <div class="acceptance-banner" id="acceptance-banner">
+                <div class="ab-text">
+                  <strong>Awaiting Client Acceptance</strong>
+                  Send this quote to your client. Once accepted, convert it to a formal invoice.
+                </div>
+                <div class="ab-actions">
+                  <button class="ab-btn accept"  onclick="markAccepted()">MARK ACCEPTED</button>
+                  <button class="ab-btn decline" onclick="markDeclined()">MARK DECLINED</button>
+                </div>
+              </div>
+
+              <div class="inv-hdr">
+                <div>
+                  <div class="inv-num" id="num-display">—</div>
+                  <div class="inv-sub">MYLEDGER &middot; GENERATED LOCALLY &middot; NO SUBSCRIPTIONS</div>
+                  <div class="inv-from-block">
+                    <span class="lbl" style="margin-top:14px">From</span>
+                    <span class="editable" id="from-name" contenteditable="true">Your Name / Studio</span><br>
+                    <span class="editable f-muted" id="from-email" contenteditable="true">email@domain.com</span><br>
+                    <span class="editable f-muted" id="from-addr"  contenteditable="true">City, Country</span>
+                  </div>
+                </div>
+                <div class="inv-dates-col">
+                  <div class="inv-dates-row">
+                    <div class="date-blk">
+                      <span class="lbl" id="date1-label">Date</span>
+                      <input type="date" id="issue-date">
+                    </div>
+                    <div class="date-blk">
+                      <span class="lbl" id="date2-label">Valid Until</span>
+                      <input type="date" id="due-date">
+                    </div>
+                  </div>
+                  <div class="to-block">
+                    <span class="lbl" style="display:block;text-align:right">Prepared For</span>
+                    <span class="editable f-bold"  id="to-name"    contenteditable="true">Client Name</span><br>
+                    <span class="editable f-muted" id="to-company" contenteditable="true">Company / Studio</span><br>
+                    <span class="editable f-muted" id="to-email"   contenteditable="true">client@company.com</span><br>
+                    <span class="editable f-muted" id="to-addr"    contenteditable="true">Client Address</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- LINE ITEMS -->
+              <div class="items-wrap" style="padding-top:4px">
+                <table class="items-tbl">
+                  <thead>
+                    <tr>
+                      <th style="width:30px">#</th>
+                      <th style="width:20%">ITEM</th>
+                      <th data-h="det">DETAIL</th>
+                      <th class="r" style="width:48px">QTY</th>
+                      <th class="r" style="width:76px">RATE</th>
+                      <th class="r" data-h="disc" style="width:52px">DISC%</th>
+                      <th class="r" style="width:76px">TOTAL</th>
+                      <th style="width:22px"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="items-body"></tbody>
+                </table>
+                <div style="padding:6px 0 4px">
+                  <button class="add-line" onclick="addRow()">+ ADD LINE ITEM</button>
+                </div>
+              </div>
+
+              <!-- TOTALS -->
+              <div class="totals-area">
+                <div class="totals-block">
+                  <div class="tr-row muted"><span class="tl">Subtotal</span><span class="tv" id="t-sub">$0.00</span></div>
+                  <div class="tr-row disc"  id="disc-row" style="display:none"><span class="tl">Discount</span><span class="tv" id="t-disc">-$0.00</span></div>
+                  <div class="tr-row muted" id="tax-row"  style="display:none"><span class="tl">Tax</span><span class="tv" id="t-tax">$0.00</span></div>
+                  <div class="tr-row grand"><span class="tl">Total</span><span class="tv" id="t-total">$0.00</span></div>
+                </div>
+              </div>
+
+              <!-- FOOTER -->
+              <div class="inv-ftr">
+                <div>
+                  <span class="lbl" id="notes-label">Notes / Scope Clarifications</span>
+                  <span class="notes-txt editable" id="inv-notes" contenteditable="true">Thank you for your business.</span>
+                </div>
+                <div class="ftr-right">
+                  <div>TERMS: <span class="editable" id="inv-terms" contenteditable="true">NET 30</span></div>
+                  <div>CURRENCY: <span class="editable" id="inv-curr" contenteditable="true">USD</span></div>
+                  <div style="margin-top:2px;color:var(--ink4);font-size:8px">PAGE 1 / 1</div>
+                </div>
+              </div>
+
+              <!-- PAYMENT BLOCK -->
+              <div class="pay-block" id="pay-block">
+                <div class="pay-block-title" id="pay-block-title">Payment Details</div>
+                <div class="pay-methods-grid" id="pay-methods-grid"></div>
+              </div>
+
+              <!-- STATUS STAMP -->
+              <svg class="stamp" id="stamp" width="210" height="105" viewBox="0 0 210 105"></svg>
+
+            </div>
+          </div>
+
+          <!-- RIGHT PANEL -->
+          <div class="panel" id="panel">
+
+            <!-- FLOW STEPS -->
+            <div class="flow-steps">
+              <span class="lbl" style="margin-bottom:10px">Document Flow</span>
+              <div class="flow-step" id="flow-quote">
+                <div class="fs-dot"><svg viewBox="0 0 8 8" fill="none" stroke="white" stroke-width="1.5"><polyline points="1,4 3,6 7,2"/></svg></div>
+                <span class="fs-label">Quote Sent</span>
+              </div>
+              <div class="flow-step" id="flow-accepted">
+                <div class="fs-dot"><svg viewBox="0 0 8 8" fill="none" stroke="white" stroke-width="1.5"><polyline points="1,4 3,6 7,2"/></svg></div>
+                <span class="fs-label">Accepted</span>
+              </div>
+              <div class="flow-step" id="flow-invoiced">
+                <div class="fs-dot"><svg viewBox="0 0 8 8" fill="none" stroke="white" stroke-width="1.5"><polyline points="1,4 3,6 7,2"/></svg></div>
+                <span class="fs-label">Invoiced</span>
+              </div>
+              <div class="flow-step" id="flow-paid" style="padding-bottom:10px">
+                <div class="fs-dot"><svg viewBox="0 0 8 8" fill="none" stroke="white" stroke-width="1.5"><polyline points="1,4 3,6 7,2"/></svg></div>
+                <span class="fs-label">Paid</span>
+              </div>
+            </div>
+
+            <!-- STATUS -->
+            <div class="ps">
+              <span class="lbl">Status</span>
+              <select id="p-status" onchange="applyStatus(this.value)">
+                <optgroup label="Quote">
+                  <option value="quote">Quote — Draft</option>
+                  <option value="quote-sent">Quote — Sent</option>
+                  <option value="accepted">Quote — Accepted</option>
+                  <option value="declined">Quote — Declined</option>
+                </optgroup>
+                <optgroup label="Invoice">
+                  <option value="draft">Invoice — Draft</option>
+                  <option value="pending">Invoice — Sent</option>
+                  <option value="paid">Invoice — Paid</option>
+                  <option value="overdue">Invoice — Overdue</option>
+                  <option value="void">Void</option>
+                </optgroup>
+              </select>
+            </div>
+
+            <!-- DISCOUNT -->
+            <div class="ps">
+              <span class="lbl">Invoice Discount</span>
+              <input type="number" id="p-disc" placeholder="Amount" min="0" oninput="recalc()">
+              <select id="p-disc-type" onchange="recalc()">
+                <option value="fixed">Fixed $</option>
+                <option value="pct">Percentage %</option>
+              </select>
+            </div>
+
+            <!-- TAX -->
+            <div class="ps">
+              <span class="lbl">Tax Rate %</span>
+              <input type="number" id="p-tax" placeholder="e.g. 10" min="0" max="100" oninput="recalc()">
+            </div>
+
+            <!-- PAYMENT CHECKBOXES -->
+            <div class="pay-checks" id="pay-checks" style="display:none">
+              <span class="lbl">Payment Methods</span>
+              <div id="pay-check-list"></div>
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="ps">
+              <button class="p-btn export" onclick="saveDoc()">SAVE</button>
+              <button class="p-btn blue"   id="panel-convert-btn" style="display:none" onclick="convertToInvoice()">CONVERT TO INVOICE</button>
+              <button class="p-btn dark"   onclick="printDoc()">EXPORT / PRINT</button>
+              <button class="p-btn"        onclick="duplicateDoc()">DUPLICATE</button>
+              <button class="p-btn danger" onclick="deleteDoc()">DELETE</button>
+            </div>
+
+            <!-- META -->
+            <div class="ps" style="border:none">
+              <span class="lbl">Record ID</span>
+              <div style="font-family:var(--mono);font-size:10px;color:var(--ink2);margin-bottom:6px" id="p-id">—</div>
+              <span class="lbl">Created</span>
+              <div style="font-family:var(--mono);font-size:9px;color:var(--ink4)" id="p-created">—</div>
+            </div>
+
+          </div><!-- /panel -->
+        </div><!-- /workspace -->
+      </div><!-- /view-invoices -->
+
+      <!-- CLIENTS VIEW -->
+      <div id="view-clients" class="view-page" style="display:none">
+        <div class="view-title">Client Directory</div>
+        <div id="client-list-view"></div>
+        <p style="font-family:var(--mono);font-size:9px;color:var(--ink4);letter-spacing:0.06em;line-height:2;margin-top:20px">
+          CLIENTS COMPILED FROM DOCUMENT HISTORY.<br>
+          QUICK-FILL ON NEW DOCUMENTS PLANNED FOR v1.1.
+        </p>
+      </div>
+
+      <!-- SETTINGS VIEW -->
+      <div id="view-settings" class="view-page" style="display:none">
+        <div class="view-title">Settings</div>
+        <div class="settings-tabs">
+          <button class="stab active" data-tab="profile" onclick="switchSettingsTab('profile')">Profile</button>
+          <button class="stab"        data-tab="payment" onclick="switchSettingsTab('payment')">Payment Methods</button>
+          <button class="stab"        data-tab="data"    onclick="switchSettingsTab('data')">Data</button>
+        </div>
+
+        <!-- PROFILE -->
+        <div class="stab-panel active" id="stab-profile">
+          <div class="settings-cols">
+            <div>
+              <div class="settings-section-title">Your Details</div>
+              <div class="s-row"><span class="settings-label">Name / Studio</span><input class="settings-input" type="text" id="s-from-name" placeholder="Your Name or Studio"></div>
+              <div class="s-row"><span class="settings-label">Email</span><input class="settings-input" type="text" id="s-from-email" placeholder="you@domain.com"></div>
+              <div class="s-row"><span class="settings-label">Address / Location</span><input class="settings-input" type="text" id="s-from-addr" placeholder="City, Country"></div>
+            </div>
+            <div>
+              <div class="settings-section-title">Invoice Defaults</div>
+              <div class="s-row"><span class="settings-label">Default Currency</span><input class="settings-input narrow" type="text" id="s-currency" placeholder="USD"></div>
+              <div class="s-row"><span class="settings-label">Payment Terms</span><input class="settings-input narrow" type="text" id="s-terms" placeholder="NET 30"></div>
+              <div class="s-row"><span class="settings-label">Tax Rate %</span><input class="settings-input narrow" type="number" id="s-tax" placeholder="0"></div>
+              <div class="s-row"><span class="settings-label">Quote Valid Days</span><input class="settings-input narrow" type="number" id="s-quote-days" placeholder="30"></div>
+            </div>
+          </div>
+          <div class="settings-footer">
+            <button class="save-settings-btn" onclick="saveSettings()">SAVE SETTINGS</button>
+            <span class="settings-note" id="settings-saved-note"></span>
+          </div>
+        </div>
+
+        <!-- PAYMENT METHODS -->
+        <div class="stab-panel" id="stab-payment">
+          <p style="font-family:var(--mono);font-size:9px;color:var(--ink4);letter-spacing:0.06em;line-height:1.9;margin-bottom:20px;max-width:560px">
+            CONFIGURE YOUR PAYMENT METHODS ONCE. ON EACH DOCUMENT, SELECT WHICH TO SHOW VIA THE OPTIONS PANEL.
+          </p>
+          <div class="pay-methods-list">
+
+            <div class="pay-method" id="pm-bank">
+              <div class="pay-method-head" onclick="togglePayMethod('bank')">
+                <div class="pay-toggle" id="pt-bank"></div>
+                <span class="pay-method-title">Bank Transfer</span>
+                <span class="pay-chevron">▾</span>
+              </div>
+              <div class="pay-method-body">
+                <div class="pay-field"><span class="settings-label">Recipient Name</span><input class="settings-input" type="text" id="pm-bank-name" placeholder="Full name or business name"></div>
+                <div class="pay-field"><span class="settings-label">Bank Name</span><input class="settings-input" type="text" id="pm-bank-bank" placeholder="e.g. First National Bank"></div>
+                <div class="pay-field"><span class="settings-label">Account Number</span><input class="settings-input" type="text" id="pm-bank-account" placeholder="Account number"></div>
+                <div class="pay-field"><span class="settings-label">IBAN</span><input class="settings-input" type="text" id="pm-bank-iban" placeholder="e.g. GB29 NWBK 6016 1331 9268 19"></div>
+                <div class="pay-field"><span class="settings-label">SWIFT / BIC</span><input class="settings-input" type="text" id="pm-bank-swift" placeholder="e.g. NWBKGB2L"></div>
+                <div class="pay-field"><span class="settings-label">Sort Code</span><input class="settings-input narrow" type="text" id="pm-bank-sort" placeholder="e.g. 60-16-13"></div>
+                <div class="pay-field"><span class="settings-label">Reference Note</span><input class="settings-input" type="text" id="pm-bank-ref" placeholder="e.g. Use invoice number as reference"></div>
+              </div>
+            </div>
+
+            <div class="pay-method" id="pm-wise">
+              <div class="pay-method-head" onclick="togglePayMethod('wise')">
+                <div class="pay-toggle" id="pt-wise"></div>
+                <span class="pay-method-title">Wise</span>
+                <span class="pay-chevron">▾</span>
+              </div>
+              <div class="pay-method-body">
+                <div class="pay-field"><span class="settings-label">Recipient Name</span><input class="settings-input" type="text" id="pm-wise-name" placeholder="Name on Wise account"></div>
+                <div class="pay-field"><span class="settings-label">Payment Link</span><input class="settings-input" type="text" id="pm-wise-link" placeholder="https://wise.com/pay/..."></div>
+                <div class="pay-field"><span class="settings-label">Email (optional)</span><input class="settings-input" type="text" id="pm-wise-email" placeholder="wise@youremail.com"></div>
+              </div>
+            </div>
+
+            <div class="pay-method" id="pm-paypal">
+              <div class="pay-method-head" onclick="togglePayMethod('paypal')">
+                <div class="pay-toggle" id="pt-paypal"></div>
+                <span class="pay-method-title">PayPal</span>
+                <span class="pay-chevron">▾</span>
+              </div>
+              <div class="pay-method-body">
+                <div class="pay-field"><span class="settings-label">Recipient Name</span><input class="settings-input" type="text" id="pm-paypal-name" placeholder="Name on PayPal account"></div>
+                <div class="pay-field"><span class="settings-label">PayPal Email</span><input class="settings-input" type="text" id="pm-paypal-email" placeholder="paypal@youremail.com"></div>
+                <div class="pay-field"><span class="settings-label">Payment Link (optional)</span><input class="settings-input" type="text" id="pm-paypal-link" placeholder="https://paypal.me/..."></div>
+              </div>
+            </div>
+
+            <div class="pay-method" id="pm-crypto">
+              <div class="pay-method-head" onclick="togglePayMethod('crypto')">
+                <div class="pay-toggle" id="pt-crypto"></div>
+                <span class="pay-method-title">Cryptocurrency</span>
+                <span class="pay-chevron">▾</span>
+              </div>
+              <div class="pay-method-body">
+                <div class="pay-field"><span class="settings-label">Currency / Token</span><input class="settings-input narrow" type="text" id="pm-crypto-currency" placeholder="e.g. USDC, BTC, ETH"></div>
+                <div class="pay-field"><span class="settings-label">Network</span><input class="settings-input narrow" type="text" id="pm-crypto-network" placeholder="e.g. Ethereum, Solana"></div>
+                <div class="pay-field"><span class="settings-label">Wallet Address</span><input class="settings-input" type="text" id="pm-crypto-address" placeholder="0x..."></div>
+                <div class="pay-field"><span class="settings-label">Note (optional)</span><input class="settings-input" type="text" id="pm-crypto-note" placeholder="e.g. ERC-20 only — confirm network before sending"></div>
+              </div>
+            </div>
+
+          </div>
+          <div class="settings-footer">
+            <button class="save-settings-btn" onclick="savePaymentSettings()">SAVE PAYMENT SETTINGS</button>
+            <span class="settings-note" id="pay-saved-note"></span>
+          </div>
+        </div>
+
+        <!-- DATA -->
+        <div class="stab-panel" id="stab-data">
+          <div class="settings-section-title">Data Management</div>
+          <div class="data-btns">
+            <button class="data-btn" onclick="exportJSON()">EXPORT JSON BACKUP</button>
+            <button class="data-btn" onclick="document.getElementById('imp-file').click()">IMPORT JSON</button>
+            <input type="file" id="imp-file" accept=".json" style="display:none" onchange="importJSON(event)">
+          </div>
+          <div class="storage-info" id="storage-info">—</div>
+        </div>
+
+      </div><!-- /view-settings -->
+
+    </div><!-- /main -->
+
+    <!-- MOBILE OVERLAY -->
+    <div class="mob-overlay" id="mob-overlay" onclick="handleOverlayClick(event)">
+      <div class="mob-sheet" id="mob-sheet"></div>
+    </div>
+
+  </div><!-- /body -->
+
+</div><!-- /app -->
+
+<!-- JS — load order matters: globals first, app last -->
+<script src="js/globals.js"></script>
+<script src="js/db.js"></script>
+<script src="js/items.js"></script>
+<script src="js/status.js"></script>
+<script src="js/payment.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>

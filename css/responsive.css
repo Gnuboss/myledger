@@ -1,0 +1,107 @@
+/* ── TABLET ─────────────────────────────────────────────── */
+@media (max-width: 1000px) {
+  .panel   { width: 170px; min-width: 170px; }
+  .sidebar { width: 175px; min-width: 175px; }
+}
+
+/* ── MOBILE ─────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  /* Collapse panels — toolbar toggles slide them in as overlays */
+  .sidebar {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 0 !important; min-width: 0 !important;
+    border-right: none; overflow: hidden; z-index: 50;
+    box-shadow: none;
+  }
+  .sidebar.open {
+    width: 220px !important; min-width: 220px !important;
+    border-right: var(--b) !important;
+    box-shadow: 4px 0 16px rgba(0,0,0,0.18);
+  }
+  .panel {
+    position: absolute; right: 0; top: 0; bottom: 0;
+    width: 0 !important; min-width: 0 !important;
+    border-left: none; overflow: hidden; z-index: 50;
+    box-shadow: none;
+  }
+  .panel.open {
+    width: 240px !important; min-width: 240px !important;
+    border-left: var(--b) !important; overflow-y: auto;
+    box-shadow: -4px 0 16px rgba(0,0,0,0.18);
+  }
+  /* Topbar */
+  .tn[data-v=clients],
+  .tn[data-v=settings] { display: none; }
+  .topbar-logo strong  { font-size: 10px; }
+
+  /* Invoice doc */
+  .doc-area     { padding: 10px 8px 20px; }
+  .invoice-doc  { max-width: 100%; }
+  .inv-hdr      { grid-template-columns: 1fr; gap: 10px; padding: 14px; }
+  .inv-num      { font-size: 24px; }
+  .inv-dates-col{ text-align: left; }
+  .inv-dates-row{ justify-content: flex-start; }
+  .to-block     { text-align: left; }
+  .items-tbl th[data-h=det], .items-tbl td[data-c=det] { display: none; }
+  .items-tbl th[data-h=disc],.items-tbl td[data-c=disc]{ display: none; }
+  .items-wrap   { padding: 0 14px; }
+  .totals-area  { padding: 10px 14px 16px; }
+  .inv-ftr      { padding: 12px 14px; flex-direction: column; align-items: flex-start; gap: 12px; }
+  .ftr-right    { text-align: left; }
+  .stamp        { right: 14px; top: 56px; }
+  .doc-type-bar { padding: 8px 14px; }
+  .acceptance-banner { flex-direction: column; align-items: flex-start; padding: 12px 14px; }
+  .pay-block    { margin: 0 14px 16px; }
+  .pay-methods-grid { grid-template-columns: 1fr; }
+
+  /* Settings */
+  .settings-cols { grid-template-columns: 1fr; }
+  .settings-tabs { flex-wrap: wrap; }
+
+  /* Welcome */
+  .wc-head { padding: 18px 16px 14px; }
+  .wc-body { padding: 16px 16px 20px; }
+  .wc-title{ font-size: 22px; }
+
+  /* Demo banner */
+  .demo-banner-text { min-width: 100%; order: -1; }
+}
+
+/* ── PRINT ──────────────────────────────────────────────── */
+@media print {
+  .topbar, .sidebar, .panel, .toolbar, .mob-overlay,
+  .add-line, .del-row, .t-btn, .tb-btn, .status-pill,
+  .acceptance-banner, .demo-banner, .welcome-overlay,
+  .pay-checks { display: none !important; }
+
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html, body { height: auto !important; overflow: visible !important; background: #fff !important; }
+
+  .app  { height: auto !important; overflow: visible !important; flex-direction: column; }
+  .body { display: block !important; overflow: visible !important; height: auto !important; }
+  .main { display: block !important; overflow: visible !important; height: auto !important; }
+  .workspace { display: block !important; overflow: visible !important; }
+
+  #view-invoices { display: block !important; }
+  #view-clients,
+  #view-settings  { display: none !important; }
+
+  .doc-area    { padding: 0 !important; overflow: visible !important; }
+  .invoice-doc { border: none !important; max-width: 100% !important; margin: 0 !important; }
+
+  /* Restore hidden columns for print */
+  .items-tbl th[data-h=det], .items-tbl td[data-c=det]  { display: table-cell !important; }
+  .items-tbl th[data-h=disc],.items-tbl td[data-c=disc] { display: table-cell !important; }
+
+  /* Restore desktop header layout */
+  .inv-hdr       { grid-template-columns: 1fr 1fr !important; }
+  .inv-dates-col { text-align: right !important; }
+  .inv-dates-row { justify-content: flex-end !important; }
+  .to-block      { text-align: right !important; }
+
+  .doc-type-bar { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .pay-block    { display: block !important; }
+  .pay-card     { border: 0.5px solid #ccc !important; }
+
+  @page { margin: 16mm; }
+}

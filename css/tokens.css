@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:    #0a0a08;
+  --ink2:   #2e2e28;
+  --ink3:   #6b6b62;
+  --ink4:   #9a9a90;
+  --paper:  #f5f3ee;
+  --paper2: #edeae3;
+  --paper3: #dedad0;
+  --red:    #c0392b;
+  --orange: #b35a00;
+  --green:  #1a5c2e;
+  --blue:   #185fa5;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'IBM Plex Sans', sans-serif;
+  --b:  1px solid var(--ink);
+  --bl: 0.5px solid var(--paper3);
+}
+
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: var(--sans);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.lbl {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink4);
+  display: block;
+  margin-bottom: 3px;
+}
+.f-mono  { font-family: var(--mono); }
+.f-sm    { font-size: 11px; }
+.f-muted { color: var(--ink3); }
+.f-bold  { font-weight: 500; }
+.editable { cursor: text; outline: none; display: inline; }
+.editable:hover { border-bottom: 1px dashed var(--ink3); }
+.editable:focus { border-bottom: 1px solid var(--ink); }

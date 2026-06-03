@@ -1,0 +1,148 @@
+/* ── SETTINGS TABS ─────────────────────────────────────── */
+.settings-tabs { display: flex; border-bottom: var(--b); margin-bottom: 24px; }
+.stab {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em;
+  text-transform: uppercase; padding: 8px 18px; cursor: pointer;
+  color: var(--ink4); border-bottom: 2px solid transparent;
+  background: transparent; border-top: none; border-left: none; border-right: none;
+  transition: all 0.15s;
+}
+.stab:hover { color: var(--ink); }
+.stab.active { color: var(--ink); border-bottom: 2px solid var(--ink); }
+.stab-panel { display: none; }
+.stab-panel.active { display: block; }
+
+/* ── SETTINGS LAYOUT ───────────────────────────────────── */
+.settings-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; max-width: 640px; }
+.settings-section-title {
+  font-family: var(--mono); font-size: 8px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ink3); margin-bottom: 12px;
+  padding-bottom: 6px; border-bottom: var(--bl);
+}
+.s-row { margin-bottom: 12px; }
+.settings-label {
+  font-family: var(--mono); font-size: 8px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink4); display: block; margin-bottom: 4px;
+}
+.settings-input {
+  display: block; width: 100%; font-family: var(--mono); font-size: 11px;
+  padding: 6px 8px; border: var(--b); background: var(--paper); color: var(--ink);
+}
+.settings-input:focus { outline: 2px solid var(--ink); outline-offset: -2px; }
+.settings-input.narrow { width: 130px; }
+.settings-footer {
+  display: flex; align-items: center; gap: 12px; margin-top: 24px;
+  max-width: 640px; padding-top: 16px; border-top: var(--bl);
+}
+.save-settings-btn {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em;
+  text-transform: uppercase; padding: 9px 22px; border: var(--b);
+  background: var(--ink); color: var(--paper); cursor: pointer; transition: all 0.15s;
+}
+.save-settings-btn:hover { background: #333; }
+.settings-note {
+  font-family: var(--mono); font-size: 9px; color: var(--ink4); letter-spacing: 0.06em;
+}
+
+/* ── PAYMENT METHOD CARDS ──────────────────────────────── */
+.pay-methods-list { max-width: 640px; }
+.pay-method { border: var(--b); margin-bottom: 10px; background: #fff; }
+.pay-method-head {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+  cursor: pointer; user-select: none; background: var(--paper);
+}
+.pay-method-head:hover { background: var(--paper2); }
+.pay-toggle {
+  width: 32px; height: 18px; border: 1.5px solid var(--ink3);
+  position: relative; cursor: pointer; background: transparent;
+  transition: all 0.15s; flex-shrink: 0;
+}
+.pay-toggle.on { background: var(--ink); border-color: var(--ink); }
+.pay-toggle::after {
+  content: ''; position: absolute; width: 10px; height: 10px;
+  background: var(--ink3); top: 2px; left: 2px; transition: all 0.15s;
+}
+.pay-toggle.on::after { background: #fff; left: 16px; }
+.pay-method-title {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
+  text-transform: uppercase; font-weight: 500; flex: 1;
+}
+.pay-chevron { font-family: var(--mono); font-size: 10px; color: var(--ink4); }
+.pay-method-body { padding: 12px 14px 14px; display: none; border-top: var(--bl); }
+.pay-method.open .pay-method-body { display: block; }
+.pay-field { margin-bottom: 10px; }
+.pay-field:last-child { margin-bottom: 0; }
+
+/* ── DATA SECTION ──────────────────────────────────────── */
+.data-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.data-btn {
+  font-family: var(--mono); font-size: 8px; letter-spacing: 0.1em;
+  text-transform: uppercase; padding: 8px 16px; border: var(--b);
+  background: transparent; cursor: pointer; color: var(--ink); transition: all 0.15s;
+}
+.data-btn:hover { background: var(--ink); color: var(--paper); }
+.storage-info {
+  font-family: var(--mono); font-size: 9px; color: var(--ink4);
+  line-height: 2; letter-spacing: 0.06em; margin-top: 18px;
+  padding-top: 14px; border-top: var(--bl);
+}
+
+/* ── CLIENT CARDS ──────────────────────────────────────── */
+.client-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 12px; max-width: 720px; }
+.client-card { background: #fff; border: var(--b); padding: 14px 16px; }
+.cc-name    { font-family: var(--mono); font-size: 12px; font-weight: 500; }
+.cc-company { font-size: 11px; color: var(--ink3); margin-top: 2px; }
+.cc-email   { font-size: 10px; color: var(--ink4); margin-top: 1px; font-family: var(--mono); }
+.cc-foot    {
+  border-top: var(--bl); margin-top: 10px; padding-top: 8px;
+  display: flex; justify-content: space-between;
+  font-family: var(--mono); font-size: 9px; color: var(--ink3);
+}
+
+/* ── WELCOME OVERLAY ───────────────────────────────────── */
+.welcome-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.82);
+  z-index: 9000; display: flex; align-items: center;
+  justify-content: center; padding: 20px;
+}
+.welcome-overlay.hidden { display: none; }
+.welcome-card {
+  background: var(--paper); border: var(--b);
+  max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto;
+}
+.wc-head { background: var(--ink); padding: 24px 28px 20px; }
+.wc-logo { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #888; margin-bottom: 8px; }
+.wc-title { font-family: var(--mono); font-size: 28px; font-weight: 600; color: var(--paper); letter-spacing: -0.01em; line-height: 1.1; }
+.wc-sub   { font-family: var(--mono); font-size: 9px; color: #666; letter-spacing: 0.08em; margin-top: 6px; }
+.wc-body  { padding: 22px 28px 26px; }
+.wc-principle { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: var(--bl); }
+.wc-principle:last-of-type { border-bottom: none; padding-bottom: 0; }
+.wc-icon  { font-size: 17px; line-height: 1.3; flex-shrink: 0; width: 26px; text-align: center; }
+.wc-principle-title { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); font-weight: 500; margin-bottom: 3px; }
+.wc-principle-desc  { font-size: 11px; color: var(--ink3); line-height: 1.6; }
+.wc-demo-note {
+  background: var(--paper2); border-left: 3px solid var(--red);
+  padding: 10px 14px; margin: 18px 0; font-family: var(--mono);
+  font-size: 9px; letter-spacing: 0.06em; color: var(--ink3); line-height: 1.9;
+}
+.wc-demo-note strong { color: var(--red); display: block; margin-bottom: 3px; letter-spacing: 0.1em; }
+.wc-actions { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+.wc-start-btn {
+  flex: 1; font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase; padding: 12px 20px; background: var(--ink);
+  color: var(--paper); border: none; cursor: pointer; transition: background 0.15s; min-width: 140px;
+}
+.wc-start-btn:hover { background: #333; }
+.wc-dl-btn {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase; padding: 12px 20px; background: transparent;
+  color: var(--ink); border: var(--b); cursor: pointer; transition: all 0.15s;
+  text-decoration: none; display: inline-flex; align-items: center; justify-content: center;
+}
+.wc-dl-btn:hover { background: var(--ink); color: var(--paper); }
+.wc-skip {
+  display: block; text-align: center; margin-top: 10px; background: none; border: none;
+  font-family: var(--mono); font-size: 8px; letter-spacing: 0.1em; color: var(--ink4);
+  cursor: pointer; text-transform: uppercase;
+}
+.wc-skip:hover { color: var(--ink); }
